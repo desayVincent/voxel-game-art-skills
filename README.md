@@ -1,8 +1,73 @@
-# Voxel Game Art Skills
+# Image Art Skills
 
-这是一组面向 Codex 的体素 / 低多边形 / 方块 Q 版游戏美术 skills。它们把模糊想法整理成清晰美术 brief，默认加入高级材质、镜头、光影、色彩和负面控制，再生成提示词，并可选调用图片 API 直接生成或编辑图片。
+这是一组面向 Codex 的图像美术 skills。它们把模糊想法整理成清晰美术 brief，默认加入材质、镜头、光影、色彩和负面控制，再生成提示词，并可选调用图片 API 直接生成或编辑图片。
 
-对外只有两个入口：
+## URI Dream Lab Skills
+
+URI Dream Lab 风格面向超写实 3D 动漫角色图：未来科技、都市/运动/赛博场景、高饱和、动态透视、透明或反光技术服装、皮肤透光、丝滑发丝和电影级 FX。
+
+入口：
+
+1. `uri-art-brief`: 把 URI Dream Lab 角色需求整理成 brief 和 creative_style，不生成图片。
+2. `uri-character-art`: 生成 prompt package，或在用户要求时调用图片脚本生成/编辑图片。
+
+示例：
+
+```text
+Use $uri-art-brief 先帮我整理一个银发赛道角色的 URI Dream Lab brief。
+Use $uri-character-art 把这个角色想法生成 URI Dream Lab 超写实 3D 动漫提示词。
+```
+
+`uri-character-art` 内置自动补全矩阵。用户只给一个短想法时，它会自动补齐角色定位、动作、镜头、服装锚点、场景、光影、色彩、FX 和大字贴标。
+
+常用预设：
+
+- `xhs-default`: 小红书默认亮色海上赛道风。
+- `bright-offshore-racer`: 蓝天、海上平台、伸手广角、黄色运动服。
+- `neon-rooftop-idol`: 夜景楼顶、霓虹、湿地反光、冷感姿态。
+- `storm-courier`: 风暴公路、雨滴、战术快递员。
+- `lab-test-pilot`: 高空研究站、飞行服、回眸肖像。
+- `golden-hour-navigator`: 夕阳轨道甲板、暖色光、情绪肖像。
+
+生成 prompt：
+
+```bash
+node uri-character-art/scripts/generate-prompt.mjs \
+  --preset xhs-default \
+  --seed "silver-white haired future tech racing character"
+```
+
+直接生成 9:16 图片：
+
+```bash
+node uri-character-art/scripts/xbai-image.mjs \
+  --prompt "..." \
+  --ar 9:16 \
+  --quality high \
+  --output output.png
+```
+
+URI 目录结构：
+
+```text
+skills/
+├── uri-art-brief/
+│   ├── SKILL.md
+│   └── agents/openai.yaml
+└── uri-character-art/
+    ├── SKILL.md
+    ├── .env.example
+    ├── agents/
+    │   ├── openai.yaml
+    │   └── uri-art-agent.mjs
+    └── scripts/
+        ├── generate-prompt.mjs
+        └── xbai-image.mjs
+```
+
+## Voxel Game Art Skills
+
+体素 / 低多边形 / 方块 Q 版游戏美术入口：
 
 1. `voxel-art-brief`: 把需求想清楚。
 2. `voxel-game-art`: 生成 prompt 或直接出图。
@@ -161,14 +226,14 @@ cp voxel-game-art/.env.example voxel-game-art/.env
 然后填写：
 
 ```env
-XBAI_API_KEY=sk-your-key
+XBAI_API_KEY=<your-api-key>
 XBAI_BASE_URL=https://api.xbai.top/v1
 ```
 
 也可以使用：
 
 ```env
-OPENAI_API_KEY=sk-your-key
+OPENAI_API_KEY=<your-api-key>
 ```
 
 不要提交真实 API key。

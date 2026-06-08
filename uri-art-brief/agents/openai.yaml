@@ -1,0 +1,6 @@
+interface:
+  display_name: "URI Art Brief"
+  short_description: "Clarify URI Dream Lab character briefs"
+  default_prompt: "Use $uri-art-brief to clarify my URI Dream Lab character idea before generating a prompt."
+policy:
+  allow_implicit_invocation: true
