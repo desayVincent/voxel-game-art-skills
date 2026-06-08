@@ -24,7 +24,7 @@ const PRESETS = {
   "xhs-default": {
     archetype: "street racer",
     world:
-      "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall DREAM LAB tower sign",
+      "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall signature tower sign",
     outfitAnchor: "transparent PVC racing jacket",
     heroMoment: "reaching hand toward camera at full extension",
     emotion: "reckless confidence",
@@ -38,7 +38,7 @@ const PRESETS = {
   "bright-offshore-racer": {
     archetype: "street racer",
     world:
-      "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall DREAM LAB tower sign",
+      "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall signature tower sign",
     outfitAnchor: "transparent PVC racing jacket",
     heroMoment: "reaching hand toward camera at full extension",
     emotion: "reckless confidence",
@@ -52,7 +52,7 @@ const PRESETS = {
   "neon-rooftop-idol": {
     archetype: "idol off-duty",
     world:
-      "rooftop helipad at night, neon city skyline, wet reflective floor, one DREAM LAB sign",
+      "rooftop helipad at night, neon city skyline, wet reflective floor, one signature sign",
     outfitAnchor: "oversized chrome bomber with hood",
     heroMoment: "lowering goggles with direct eye contact",
     emotion: "cold amusement",
@@ -80,14 +80,14 @@ const PRESETS = {
   "lab-test-pilot": {
     archetype: "ship navigator",
     world:
-      "high-altitude research station, white gantry, glass dock rail, bright clouds",
+      "storm-ringed high-altitude research station, white gantry, glass dock rail, cold cloud-gap light",
     outfitAnchor: "high-collar military flight suit",
     heroMoment: "looking back over shoulder with wind-hit hair",
     emotion: "quiet intensity",
     colorProfile: "void_arc",
-    lightingProfile: "daylight_impact",
+    lightingProfile: "storm_edge",
     camera: "85mm portrait",
-    fxLayer: "volumetric light shaft; hair rim glow; floating dust motes",
+    fxLayer: "cloud mist; hair rim glow; subtle film grain",
     outfitDetail:
       "white and black flight suit, silver harness, headset, clean chest logo",
   },
@@ -133,6 +133,9 @@ const LIGHTING_PROFILES = {
 
 const QUALITY_ANCHORS =
   "(URI DREAM LAB style:1.25), (hyper-realistic 3D anime character art:1.25), (high saturation:1.2), (high exposure:1.12), (large readable URI / DREAM LAB / 05 decals only:1.25), minimal tiny text, masterpiece, best quality, 8K resolution, realistic 3D rendering, high contrast colors, rich vivid color, ultra-fine details, Japanese semi-realistic anime style, cinematic composition, bright clear colors, Unreal Engine 5 render quality, physically based rendering, ray tracing reflections";
+
+const QUALITY_ANCHORS_WITH_CUSTOM_DECALS =
+  "(URI DREAM LAB style:1.25), (hyper-realistic 3D anime character art:1.25), (high saturation:1.2), (high exposure:1.12), large readable custom decals only, minimal tiny text, masterpiece, best quality, 8K resolution, realistic 3D rendering, high contrast colors, rich vivid color, ultra-fine details, Japanese semi-realistic anime style, cinematic composition, bright clear colors, Unreal Engine 5 render quality, physically based rendering, ray tracing reflections";
 
 const NEGATIVE_PROMPT =
   "(worst quality, low quality:1.4), flat shading, flat 2D anime, painting texture, sketch lines, watercolor texture, dull muddy colors, dark underexposed image, low saturation, low contrast, washed-out skin, dry matte skin, cheap plastic skin, deformed hands, extra fingers, anatomical errors, bad proportions, generic AI face, no personality, bland expression, flat neutral camera, cluttered busy background fighting subject for attention, overblown bloom, uncontrolled lens flare spam, purple fringing, small illegible text, random micro text, fake letters, garbled decals, dense typography clutter, text artifacts, watermark, unsafe or age-inappropriate styling, unrequested gender presentation drift, low-resolution softness";
@@ -212,6 +215,16 @@ function asList(value) {
     .filter(Boolean);
 }
 
+function isDefaultDecalSet(decals) {
+  const normalized = decals.map((item) => item.toUpperCase()).sort();
+  return (
+    normalized.length === 3 &&
+    normalized[0] === "05" &&
+    normalized[1] === "DREAM LAB" &&
+    normalized[2] === "URI"
+  );
+}
+
 function normalizeBrief(input) {
   const presetName = input.preset;
   const preset = presetName ? PRESETS[presetName] : {};
@@ -232,10 +245,17 @@ function buildPackage(brief) {
     LIGHTING_PROFILES[brief.lightingProfile] || brief.lightingProfile;
   const fxItems = asList(brief.fxLayer).slice(0, 3);
   const decals = asList(brief.decals);
+  const usesDefaultDecals = isDefaultDecalSet(decals);
+  const qualityAnchors =
+    decals.length > 0 && !usesDefaultDecals
+      ? QUALITY_ANCHORS_WITH_CUSTOM_DECALS
+      : QUALITY_ANCHORS;
   const decalText =
-    decals.length > 0
-      ? `(large readable URI / DREAM LAB / 05 decals only:1.25), prominent clean signature decals ${decals.map((item) => `"${item}"`).join(", ")}, placed on 2-3 large surfaces only: chest print, one sleeve patch, one jacket panel, or one background sign, minimal tiny text, no dense micro typography`
-      : "no required text decals";
+    decals.length === 0
+      ? "no required text decals"
+      : usesDefaultDecals
+        ? `(large readable URI / DREAM LAB / 05 decals only:1.25), prominent clean signature decals "URI", "DREAM LAB", "05", max 3 large text surfaces total, chest print or sleeve patch or jacket panel or one background sign, minimal tiny text, no dense micro typography, no serial numbers, no random paragraphs`
+        : `large readable custom text decals only: ${decals.map((item) => `"${item}"`).join(", ")}, remove default URI / DREAM LAB / 05 decals unless explicitly listed, max 3 large text surfaces total, minimal tiny text, no dense micro typography, no serial numbers, no random paragraphs, no fake interface labels`;
 
   const characterDescription = [
     `${brief.archetype}, ${brief.seed}`,
@@ -252,7 +272,7 @@ function buildPackage(brief) {
   ].join(", ");
 
   const positivePrompt = [
-    QUALITY_ANCHORS,
+    qualityAnchors,
     characterDescription,
     outfitDescription,
     `${brief.heroMoment}, ${brief.emotion}, dynamic diagonal body line, subject dominant in frame`,

@@ -21,13 +21,15 @@ It does not copy one fixed uploaded image. Treat reference images as style gramm
 ## Workflow
 
 1. If the user provides prompt text from a template image, first run the template decomposition workflow below.
-2. If the user provides 5-10 reference images for one URI Dream Lab style, run the visual reverse-engineering workflow below and merge the result into the prompt formula.
+2. If the user provides 5-10 reference images for one URI Dream Lab style, run the visual reverse-engineering workflow below. Once validated, replace the bootstrap formula sections with the new reference-derived formula instead of keeping two competing formulas.
 3. Inspect the user brief or reference image. Extract durable anchors only: character role, face/eye appeal, hair color and motion, outfit anchor, material finish, pose, camera angle, light direction, color profile, scene context, FX, and any explicit branding/text decals.
 4. If important fields are missing, infer creatively. Ask at most one short clarification round with no more than 3 questions only when a wrong assumption would materially change the result.
 5. Produce an `art_brief` using the shape below.
 6. Create `creative_style` by routing the brief through the dynamic visual engine.
 7. Produce a `prompt_package` with `main_prompt`, `compact_prompt`, `negative_prompt`, `edit_prompt`, and consistency locks.
-8. If the user asks to generate or edit an image, use `scripts/xbai-image.mjs`.
+8. If the user asks to generate or edit an image:
+   - If `scripts/xbai-image.mjs` exists in this skill directory, use it.
+   - If it is unavailable, output the assembled `prompt_package` only and tell the user to paste it into their preferred image generation tool.
 
 ## Reference Reverse Engineering
 
@@ -94,6 +96,8 @@ Map the reverse-engineered output back into this file:
 
 ## Reverse-Engineered Base Formula
 
+Bootstrap placeholder: these weights are estimated starter anchors, not validated measurements from a real 5-10 image URI reference set. When the Reference Reverse Engineering workflow is completed with real references, replace this section with the validated anchors.
+
 Use this as the default reusable formula when no stronger reference-derived formula is provided.
 
 1. Style anchor tags:
@@ -146,9 +150,9 @@ Lock these:
 - Subject priority: one main character dominates the image.
 - Skin and face formula: `(translucent skin:1.18), subsurface scattering, protected skin highlights, delicate facial features, large luminous eyes, glossy eye catchlights, clean minimal makeup, soft nose bridge highlight, emotionally readable expression, slight 3/4 face angle`.
 - Hair formula: `(silky high-detail hair:1.18), individual strand separation, hair rim glow, windswept hair, floating hair strands, directional upper-rear rim light, silver-white / platinum / deep black / vivid dyed color range by default`.
-- Outfit and material formula: technical fabrics, transparent PVC, nylon, latex, mesh, neoprene, athletic compression wear, futuristic armor panels, structured streetwear, reflective zippers, transparent overlay layers, straps, seams, wet/glossy surface sheen, `(large readable URI / DREAM LAB / 05 decals only:1.25)`, oversized sleeve decal, chest logo print, one background lab sign, minimal tiny text.
+- Outfit and material formula: technical fabrics, transparent PVC, nylon, latex, mesh, neoprene, athletic compression wear, futuristic armor panels, structured streetwear, reflective zippers, transparent overlay layers, straps, seams, wet/glossy surface sheen. Follow Signature Text Decals for all text branding.
 - Signature item: always include 1-2 iconic outfit or prop anchors such as transparent racing jacket, chrome bomber, tech harness, visor, neon collar, thigh strap, equipment rig, glove, headset, or panelled armor piece.
-- Signature text decals: by default include only prominent, readable `URI`, `DREAM LAB`, and `05` decals on 2-3 large surfaces such as chest print, one sleeve patch, one jacket panel, or one background sign. Use `(large readable URI / DREAM LAB / 05 decals only:1.25)` unless the user explicitly disables text. Avoid dense micro typography; small filler text should be absent or visually minimal. Use `06` only when the user explicitly asks for it.
+- Signature text decals: see Signature Text Decals.
 - Camera: always specify camera angle and depth of field. For reaching or first-person energy, use 24mm foreshortening language.
 - Lighting: strong named lighting profile, clear key/fill/rim logic, visible catchlights, hair rim, and controlled highlights.
 - Background: futuristic, urban, sport-tech, coastal, industrial, lab, platform, station, or sci-fantasy context. It supports the character and never competes.
@@ -166,17 +170,29 @@ Do not lock these:
 - photoreal human photo language
 - generic "pretty character" with no personality, outfit, scene, or camera logic
 
+## Signature Text Decals
+
+Default behavior is active unless the user disables text:
+
+- Weighted anchor: `(large readable URI / DREAM LAB / 05 decals only:1.25)`.
+- Allowed default large text: `URI`, `DREAM LAB`, and `05` only.
+- Placement: chest print (`URI`), one sleeve or jacket patch (`DREAM LAB`), one background sign (`DREAM LAB`), and one small number patch (`05`).
+- Max surfaces: 3 large text surfaces total. Do not stack every placement in one image.
+- Small text: avoid it. If unavoidable, keep it visually minimal and non-dominant.
+- Forbidden: dense micro typography, serial numbers, random paragraphs, fake interface labels, unreadable UI text, garbled decals, and any other unrequested text strings.
+- Override: if the user provides custom text, apply the same large-readable rule to the custom text and remove default `URI` / `DREAM LAB` / `05` decals unless the user also asks to keep them.
+
 ## Color System
 
 Use one primary color profile. It controls background hue, skin temperature, rim light, outfit specular color, and accent behavior.
 
-| Profile | Dominant palette | Accent | Mood |
-| --- | --- | --- | --- |
-| `solar_chrome` | sky blue, chrome white, warm gold | neon yellow | energetic, open-air, port, racing, free |
-| `cyber_violet` | deep navy, electric violet, hot pink | cyan edge | nocturnal, city, dangerous cool |
-| `jade_core` | muted olive, deep teal, bronze | acid green | tactical, grounded, military-urban |
-| `sakura_burn` | warm white, dusty rose, amber | crimson flare | emotional, golden-hour, dramatic soft |
-| `void_arc` | near-black, cold blue, silver | white core flash | extreme contrast, boss energy |
+| Profile | Dominant palette | Accent | Mood | Recommended lighting |
+| --- | --- | --- | --- | --- |
+| `solar_chrome` | sky blue, chrome white, warm gold | neon yellow | energetic, open-air, port, racing, free | `daylight_impact` |
+| `cyber_violet` | deep navy, electric violet, hot pink | cyan edge | nocturnal, city, dangerous cool | `neon_midnight` |
+| `jade_core` | muted olive, deep teal, bronze | acid green | tactical, grounded, military-urban | `storm_edge` |
+| `sakura_burn` | warm white, dusty rose, amber | crimson flare | emotional, golden-hour, dramatic soft | `golden_hour_burst` |
+| `void_arc` | near-black, cold blue, silver | white core flash | extreme contrast, boss energy | `neon_midnight` or `storm_edge` |
 
 ## Lighting Profiles
 
@@ -244,6 +260,8 @@ Reduce the final design to 3-5 big anchors: face/eyes, hair motion, outfit ancho
 
 When the user gives only a short idea, complete the missing fields from this matrix instead of asking them to write prompt details.
 
+Use Creative Remix Matrix for full `archetype`, `world`, `outfit_anchor`, `hero_moment`, and `emotion` selection. Use Auto-Completion Matrix for secondary outfit layers, props, camera pairings, atmosphere, FX, and scene details only; do not let it replace the primary outfit anchor.
+
 | Need | Options |
 | --- | --- |
 | Xiaohongshu preset | bright offshore racer, neon rooftop idol, storm courier, lab test pilot, golden-hour navigator |
@@ -253,7 +271,7 @@ When the user gives only a short idea, complete the missing fields from this mat
 | Camera pairing | 24mm foreshortening for reaching hand, 35mm low angle for tower/platform presence, 85mm for face-first portrait, 50mm for clean full-body outfit display |
 | Outfit layer | yellow sport top, black compression top, white translucent jacket, blue harness straps, chrome bomber, clear rain shell, racing shorts, tech skirt, utility belt, fingerless gloves |
 | Prop anchor | headset, goggles, hover capsule, race pass, wrist device, floating drone, helmet, data card, cable hook, compact tool |
-| Decal placement | chest `URI`, sleeve `DREAM LAB`, single `05` patch, background `DREAM LAB` sign. Use only these large words unless the user requests other text. |
+| Decal placement | Follow Signature Text Decals. Default candidates: chest `URI`, sleeve `DREAM LAB`, single `05` patch, background `DREAM LAB` sign. |
 | Weather / atmosphere | clear blue sky, sea-salt mist, light rain sparkle, rooftop sunset haze, neon steam, storm backlight, wind tunnel gust |
 | Background object | lab tower, crane arm, offshore platform, glass dock rail, maglev lane, rooftop antenna, city skyline, station gantry, holographic sign |
 | FX bundle | sun lens flare + water droplets + volumetric shaft; neon reflection + steam haze + eye catchlight; rain droplets + rim glow + film grain; bokeh foreground + hair rim glow + dust motes |
@@ -264,7 +282,7 @@ Preset routing:
 - `bright offshore racer`: street racer, offshore racing platform, transparent PVC racing jacket, reaching hand, reckless confidence, `solar_chrome`, `daylight_impact`, 24mm foreshortening.
 - `neon rooftop idol`: idol off-duty, rooftop helipad, oversized chrome bomber, lowering goggles, cold amusement, `cyber_violet`, `neon_midnight`, 35mm low angle.
 - `storm courier`: storm chaser, storm-hit coastal highway, clear rain shell, checking wrist device, focused calm, `jade_core`, `storm_edge`, 50mm full-body display.
-- `lab test pilot`: ship navigator, high-altitude research station, high-collar flight suit, looking back over shoulder, quiet intensity, `void_arc`, `daylight_impact`, 85mm portrait.
+- `lab test pilot`: ship navigator, high-altitude research station, high-collar flight suit, looking back over shoulder, quiet intensity, `void_arc`, `storm_edge`, 85mm portrait.
 - `golden-hour navigator`: ship navigator, orbital observation deck, holographic fabric jacket, wind-hit hair turn, sudden vulnerability, `sakura_burn`, `golden_hour_burst`, 85mm portrait.
 
 Do not combine every option. Pick one coherent path, then add only 2-3 FX items and 2-3 large decals.
@@ -287,7 +305,7 @@ Avoid weak or off-style combinations:
 - Plain T-shirt, school uniform, or fantasy robe without transparent/reflective tech material.
 - Multiple props plus multiple drones plus multiple text signs; it creates clutter and AI text artifacts.
 - More than 3 FX layers or dense UI overlays; it breaks the clean character-first poster look.
-- Tiny text strips, serial numbers, random paragraphs, or fake interface labels. Use only large `URI`, `DREAM LAB`, and `05`.
+- Tiny text strips, serial numbers, random paragraphs, or fake interface labels. Follow Signature Text Decals.
 
 ## Dynamic Visual Engine
 
@@ -299,7 +317,7 @@ Before writing the prompt:
 4. Select one `lighting_profile` that matches time of day and scene energy.
 5. Select one camera/lens strategy that matches the hero moment.
 6. Select 2-3 FX items that match the environment.
-7. Build character description: face, eyes, hair, skin, outfit material details, and weighted signature text decals by default.
+7. Build character description: face, eyes, hair, skin, outfit material details, and Signature Text Decals by default.
 8. Assemble final prompt in this order: quality anchors, character, action and pose, camera, scene and environment, lighting, FX, color grade.
 
 ## Art Brief Shape
@@ -366,7 +384,7 @@ Hyper-realistic anime style, Unreal Engine 5 render quality, 3D CG illustration,
 
 {character description with face, eyes, expression, skin translucency, hair color, hair strand detail, rim light, and character identity}
 
-{outfit anchor and material detail: technical fabrics, transparent overlays, reflective zippers, seams, straps, wet/glossy surfaces, signature prop, weighted large readable URI / DREAM LAB / 05 decals only, minimal tiny text}
+{outfit anchor and material detail: technical fabrics, transparent overlays, reflective zippers, seams, straps, wet/glossy surfaces, signature prop, Signature Text Decals}
 
 {hero moment and pose with emotional register}
 
@@ -394,6 +412,12 @@ Negative prompt:
 ```
 
 Edit prompt pattern:
+
+Before producing the edit prompt:
+
+- If the user specifies what to change, use that as `{requested_change}`.
+- If the user only provides a reference image without specifying changes, ask exactly one question: "What should I change - outfit, lighting, pose, scene, or color profile?"
+- Do not infer a change list without user input for edit tasks.
 
 ```text
 Use the input image as identity and composition reference, but restyle it into URI Dream Lab hyper-realistic 3D anime character art.
