@@ -1,0 +1,6 @@
+interface:
+  display_name: "Voxel Game Art"
+  short_description: "Design and generate voxel game art"
+  default_prompt: "Use $voxel-game-art to design a low-poly blocky chibi game character from my reference image."
+policy:
+  allow_implicit_invocation: true

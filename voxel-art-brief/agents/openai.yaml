@@ -1,0 +1,6 @@
+interface:
+  display_name: "Voxel Art Brief"
+  short_description: "Clarify voxel briefs with creative style"
+  default_prompt: "Use $voxel-art-brief to clarify my voxel game art idea and add the default creative style layer."
+policy:
+  allow_implicit_invocation: true
