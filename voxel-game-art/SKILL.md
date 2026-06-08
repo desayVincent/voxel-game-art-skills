@@ -15,8 +15,9 @@ If the user mainly wants to clarify the idea before prompting or image generatio
 2. If the brief is incomplete but the user clearly wants direct output, infer conservative defaults or ask one short clarification round with at most 3 questions. For deeper planning, hand off to `$voxel-art-brief`.
 3. Produce a compact `art_brief`.
 4. Ensure there is a `creative_style`. If the user supplies one from `$voxel-art-brief`, preserve it; otherwise generate one internally before writing prompts.
-5. Produce a `prompt_package` with `main_prompt`, `compact_prompt`, and `edit_prompt`.
-6. If the user asks to generate or edit an image, use `scripts/xbai-image.mjs`. Read the script only when execution or patching is needed.
+5. Style Lock, optional but recommended for batches: if a canonical sample image exists, use `--ref {style_lock_image}` to lock the overall style and describe only the subject delta in the prompt. Prefer visual anchoring over repeating style words.
+6. Produce a `prompt_package` with `main_prompt`, `compact_prompt`, and `edit_prompt`.
+7. If the user asks to generate or edit an image, use `scripts/xbai-image.mjs`. Read the script only when execution or patching is needed.
 
 This skill is intentionally OpenAI-compatible only. Do not add multi-provider routing here; use a separate general image-generation skill for that.
 
@@ -86,12 +87,18 @@ Calibration examples, for style only:
 - Lava courier proves dynamic delivery/action poses.
 - Star core miner proves sci-fi transparent helmet and tool emphasis.
 
-Default negative constraints:
+GLOBAL_NEGATIVE, append once at the end of the final prompt:
 
 ```text
 no photorealism, no realistic anatomy, no gritty texture, no PBR material maps, no messy background, no text, no UI frame, no extra characters, no over-detailed micro ornaments
 no smooth surfaces, no realistic curves, no human skin textures, no non-cubic elements, no low contrast, no messy random colors, no flat lighting
-no cheap plastic, no flat ambient lighting, no dull colors, no claymation without SSS, no muddy shadows, no overexposed highlights
+no cheap plastic, no flat ambient lighting, no dull colors, no soft clay deformation, no muddy shadows, no overexposed highlights
+```
+
+Positive material constraint to pair with negatives:
+
+```text
+solid color block shading, clean bevels, crisp voxel planes, subsurface accent limited to eyes and translucent accent zones only
 ```
 
 ## Creative Style Input
@@ -105,6 +112,8 @@ Consume these fields in the final prompt:
 - `style_tags`
 - `material_contrast`
 - `lighting_profile`
+- `lighting_design`
+- `camera_spec`
 - `camera_tags`
 - `lighting_tags`
 - `color_tags`
@@ -114,7 +123,7 @@ Consume these fields in the final prompt:
 - `dominant_anchor`
 - `restraint_note`
 
-If an older `$voxel-art-brief` result provides `material_tags` instead of `material_contrast`, convert it before writing the final prompt: infer an 80% base material, a 20% accent material, and any edge or trim accents. Do not pass raw `material_tags` through as the main material system.
+If an older `$voxel-art-brief` result provides `material_tags` instead of `material_contrast`, convert it before writing the final prompt: infer `body_60_70`, `edge_bevel_10_15`, `accent_zone_10_20`, and `ground_ao_5`. Do not pass raw `material_tags` through as the main material system.
 
 The matrix chooses the ingredients; `creative_style` turns them into the dramatic picture. Keep the creative language vivid, but keep the final asset readable and uncluttered.
 
@@ -122,30 +131,49 @@ When creating `creative_style` internally, auto-expand the user's brief with:
 
 1. Core subject: a concrete visual identity, not a literal translation.
 2. Atmosphere: inferred world mood, such as cyberpunk night, cozy workshop, heroic fantasy, or eerie toy fairytale.
-3. Material contrast: default to 80% readable base material plus 20% highlight, glow, glass, or metal accent material. Respect explicit user material requests; skip contrast if the brief requires one uniform material.
-4. Lighting profile: choose exactly one of `cozy_miniature`, `cyber_neon`, `cinematic_epic`, or `ethereal_magic` from the subject and mood.
-5. Camera system: tilt-shift miniature model effect, macro lens effect, 85mm shallow depth of field, out-of-focus foreground bokeh blocks, Dutch angle, worm's eye view, or dynamic 3/4 framing.
-6. Micro-FX: one environment effect such as floating glowing embers, magical geometric sparks, floating pixel particles, dust motes in light shafts, glass caustics, or slow-motion chunky debris.
-7. Color grading: cinematic color grading, teal-orange contrast, high contrast accents, or vibrant but harmonious voxel palette.
-8. Voxel-specific negative control: avoid smooth surfaces, realistic curves, human skin textures, non-cubic elements, low contrast, messy random colors, flat lighting, cheap plastic, muddy shadows, and overexposed highlights.
+3. Hero moment: write a single-frame concept-art shot with action/state, implied environment, and emotional tension.
+4. Camera system: choose focal length and perspective first, then add tilt-shift, macro, Dutch angle, worm's eye view, or out-of-focus foreground bokeh blocks.
+5. Lighting profile: choose exactly one of `cozy_miniature`, `cyber_neon`, `cinematic_epic`, or `ethereal_magic`, then specify key, fill, rim/back, shadow, atmosphere, and mood.
+6. Material hierarchy: describe body 60-70%, edge/bevel 10-15%, accent zone 10-20%, and ground/AO 5%. Respect explicit user material requests; skip contrast if the brief requires one uniform material.
+7. Micro-FX: one environment effect such as floating glowing embers, magical geometric sparks, floating pixel particles, dust motes in light shafts, glass caustics, or slow-motion chunky debris.
+8. Color grading: cinematic color grading, teal-orange contrast, high contrast accents, or vibrant but harmonious voxel palette.
+9. Voxel-specific negative control: use GLOBAL_NEGATIVE once; express material quality as positive constraints.
 
 ### Dynamic Visual Engine
 
 Use the visual engine to route the prompt before writing it. Do not combine all profiles.
 
-| Profile | Use for | Required lighting language |
+| Profile | Use for | Lighting design |
 | --- | --- | --- |
-| `cozy_miniature` | houses, plants, food, daily props, gentle characters | warm god rays, floating dust motes in light shafts, soft ambient occlusion, bright and airy |
-| `cyber_neon` | sci-fi, monsters, machines, night scenes, cyber props | pitch-black environment, strong neon rim light, vivid teal and orange bioluminescence, sharp shadow drop |
-| `cinematic_epic` | knights, swords, weapons, bosses, heroic characters, large dramatic scenes | dramatic chiaroscuro, heavy volumetric fog, single directional spotlight, moody atmosphere |
-| `ethereal_magic` | crystals, magic, water, ghosts, translucent creatures, fluid effects | subsurface scattering, ray-traced refractions, glass caustics, soft glowing bloom |
+| `cozy_miniature` | houses, plants, food, daily props, gentle characters | Key light: broad warm window light from 30-45 degrees above, 3000-3600K, soft edge. Fill light: bounce at 35-45% key. Rim/back light: faint honey rim. Shadow: soft contact AO. Atmosphere: dust motes only in light shafts. Mood: tiny handmade world waking in morning light. |
+| `cyber_neon` | sci-fi, monsters, machines, night scenes, cyber props | Key light: narrow neon sign or screen light from one side, saturated cyan or magenta, hard falloff. Fill light: nearly black ambient at 5-10% key. Rim/back light: opposite orange or teal strip light. Shadow: sharp colored drop. Atmosphere: thin colored haze behind subject plus sparse pixel particles. Mood: small outlaw figure caught in wet neon alley glow. |
+| `cinematic_epic` | knights, swords, weapons, bosses, heroic characters, large dramatic scenes | Key light: single hard spotlight from 45 degrees above, 4200K slightly warm, high intensity, clear shadow boundary. Fill light: weak ambient at 10-15% key. Rim/back light: opposite cool blue-violet 5500-6500K moon or magic rim. Shadow: deep sharp cast shadow and tight ground AO. Atmosphere: one-way volumetric fog or Tyndall beam behind or above the subject, never across the face. Mood: lone hero standing in a divine spotlight, surrounded by battlefield darkness. |
+| `ethereal_magic` | crystals, magic, water, ghosts, translucent creatures, fluid effects | Key light: large diffused glow from inside or below the accent core, cool 6500K with soft bloom. Fill light: pearl ambient at 20-25% key. Rim/back light: pale lavender rim and refracted edge sparkle. Shadow: soft transparent shadow with caustic flecks. Atmosphere: glass caustics and suspended motes around accent zones only. Mood: fragile artifact glowing in a quiet impossible chamber. |
 
-Material contrast:
+Camera focal-length map:
 
-- Default syntax: `80% {base_80} as the readable voxel body, contrasted with 20% {accent_20} on the core, edges, eyes, windows, blade, trim, or orbiting pieces`.
-- Examples: 80% matte ceramic voxels with 20% glowing bioluminescent glass core and metallic gold accents; 80% brushed metal blocks with 20% neon glass seams.
-- Keep glow, transparency, metal, and caustics in accent zones so the main silhouette stays clean.
-- If the user explicitly asks for one uniform material, preserve that material and add only lighting/camera contrast.
+| Emotional goal | Focal length | Use this language |
+| --- | --- | --- |
+| toy intimacy | 135mm macro | tight depth, compressed miniature scale, soft bokeh blocks at frame edges, floating subject |
+| heroic presence | 35mm wide-ish | slight wide-angle distortion, worm's eye framing, forced perspective, large dominant silhouette |
+| mystery tension | 24mm Dutch | edge distortion, tilted frame, compressed atmosphere, uneasy diagonal staging |
+| product clarity | 85mm flat | neutral perspective, centered studio, clean shadow, readable silhouette without distortion |
+
+Hero moment:
+
+- Write `hero_moment` as a single-frame concept-art shot, not a functional inventory description.
+- Include action or state, one implied environment signal, and emotional tension.
+- Format: `{subject} {action verb phrase}, {environment implied in one phrase}, {emotional beat}`.
+- Bad: `A knight holding a glowing sword`.
+- Good: `A lone crystal knight raises a cracked luminous shield as ethereal sparks rain down, a final defiant stand before oblivion`.
+
+Material hierarchy:
+
+- Body 60-70%: main volume material and dominant color.
+- Edge/Bevel 10-15%: bevel highlight, usually 1-2 stops brighter, metallic trim, frosted glass edge, or controlled specular ridge.
+- Accent Zone 10-20%: eyes, core, blade, window, staff head, rune slot, or orbiting pieces; glow, transparency, metal, and caustics belong here.
+- Ground/AO 5%: contact shadow, tiny plinth, or floating shadow that gives the asset weight.
+- If the user explicitly asks for one uniform material, preserve that material and add only camera and lighting hierarchy.
 
 Spatial depth and micro-FX:
 
@@ -226,10 +254,16 @@ High-impact creative direction:
 Hero moment:
 {creative_style.hero_moment}
 
-Camera, lighting, action, and mood:
-Lighting profile: {creative_style.lighting_profile}
+Camera direction:
+{creative_style.camera_spec}
 {creative_style.camera_tags}
+
+Lighting design:
+Lighting profile: {creative_style.lighting_profile}
+{creative_style.lighting_design}
 {creative_style.lighting_tags}
+
+Action, color, style, and mood:
 {creative_style.color_tags}
 {creative_style.action_tags}
 {creative_style.style_tags}
@@ -250,7 +284,7 @@ all forms should feel built from cubes, trapezoids, rectangular prisms, triangul
 
 Material constraints:
 {creative_style.material_contrast}
-Use the material contrast engine: about 80% simple readable base material and about 20% high-impact accent material such as glowing glass, bioluminescent core, ray-traced frosted glass, metallic trim, crystal caustics, or neon edge seams. Keep the result blocky and toy-like, no complex texture maps, no micro-detail noise. If the user explicitly requested one uniform material, honor it and rely on lighting/camera contrast instead.
+Use the material hierarchy engine: Body 60-70% defines the main volume and color; Edge/Bevel 10-15% creates crisp highlight separation; Accent Zone 10-20% carries glow, transparency, metal, caustics, eyes, core, blade, window, or rune details; Ground/AO 5% gives contact weight. Keep the result blocky and toy-like, no complex texture maps, no micro-detail noise. Use solid color block shading, clean bevels, crisp voxel planes, and subsurface accent limited to eyes and translucent accent zones only. If the user explicitly requested one uniform material, honor it and rely on lighting/camera contrast instead.
 
 Success criteria:
 {success_criteria}
@@ -258,9 +292,9 @@ Restraint:
 {creative_style.restraint_note}
 
 Negative constraints:
-{negative_constraints}
-{creative_style.extra_negative_tags}
-no smooth surfaces, no realistic curves, no human skin textures, no non-cubic elements, no low contrast, no messy random colors, no flat lighting, no cheap plastic, no flat ambient lighting, no dull colors, no claymation without SSS, no muddy shadows, no overexposed highlights.
+{GLOBAL_NEGATIVE}
+{brief-specific negative constraints only if they are not duplicates}
+{creative_style.extra_negative_tags only if they are not duplicates}
 ```
 
 ### Edit Prompt Pattern
