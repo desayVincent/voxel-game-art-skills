@@ -26,8 +26,8 @@ Ask only for missing high-impact fields. Prefer option-style questions and inclu
 
 Default questions:
 
-1. Character archetype: street racer, idol off-duty, operative, engineer, navigator, medic, hacker, champion, or storm chaser?
-2. Scene: open-air port, racing platform, city night, rooftop, lab dock, coastal road, station deck, or tech-temple?
+1. Character archetype: street racer, motorbike rider, idol off-duty, operative, engineer, navigator, medic, hacker, champion, or storm chaser?
+2. Scene: open-air port, racing platform, neon pit lane, city night, rooftop, lab dock, coastal road, station deck, or tech-temple?
 3. Camera energy: portrait, full body, low-angle presence, or hand/prop reaching toward viewer?
 
 If the user says "you decide", use the defaults below.
@@ -61,6 +61,7 @@ uri_art_brief:
   fx_layer: ["lens flare", "water droplets on glossy outfit", "volumetric light shaft"]
   hair: "short silver-white, windswept"
   eyes: "large luminous pale grey eyes"
+  face_shape: "URI-style compact soft round-oval face, softly rounded cheeks, gentle lower-face fullness, short rounded chin, soft U-shaped jaw curve"
   skin_tone: "light warm, translucent"
   outfit_detail: "yellow athletic top under transparent jacket, choker, technical straps"
   signature_text_decals: ["URI", "DREAM LAB", "05"] # only large readable decals; minimal tiny text
@@ -74,13 +75,13 @@ Pick or infer one value from each axis:
 
 | Axis | Options |
 | --- | --- |
-| Character archetype | street racer, idol off-duty, covert operative, combat medic, ship navigator, underground hacker, rogue engineer, ghost soldier, cyber shaman, tournament champion, corporate saboteur, storm chaser |
-| World and scene | offshore racing platform, rooftop helipad at dusk, underground neon arena, storm-hit coastal highway, space elevator loading dock, flooded cyberpunk alley, high-altitude research station, ancient temple with tech overlay, abandoned sports arena, orbital station observation deck |
-| Outfit anchor | transparent PVC racing jacket, carbon fiber chest rig, oversized chrome bomber with hood, skin-tight combat suit with panel seams, layered technical streetwear with harness, wet neoprene dive suit, asymmetric armored shoulder piece, high-collar military flight suit, holographic fabric qipao hybrid, exo-frame partial armor |
-| Hero moment | reaching hand toward camera at full extension, standing on edge of platform wind-hit, mid-turn with hair whipping across face, lowering visor with eye contact, back to viewer looking over shoulder, crouching then rising mid-motion, arms spread wide in defiance, equipment check with focused gaze |
+| Character archetype | street racer, motorbike rider, idol off-duty, covert operative, combat medic, ship navigator, underground hacker, rogue engineer, ghost soldier, cyber shaman, tournament champion, corporate saboteur, storm chaser |
+| World and scene | offshore racing platform, neon pit lane, coastal switchback road, rooftop helipad at dusk, underground neon arena, storm-hit coastal highway, space elevator loading dock, flooded cyberpunk alley, high-altitude research station, ancient temple with tech overlay, abandoned sports arena, orbital station observation deck |
+| Outfit anchor | transparent PVC racing jacket, glossy moto racing jacket with transparent shell, carbon fiber chest rig, oversized chrome bomber with hood, skin-tight combat suit with panel seams, layered technical streetwear with harness, wet neoprene dive suit, asymmetric armored shoulder piece, high-collar military flight suit, holographic fabric qipao hybrid, exo-frame partial armor |
+| Hero moment | reaching hand toward camera at full extension, chrome helmet tucked under one arm, lowering raised helmet visor with eye contact, leaning beside one electric sport motorcycle, standing on edge of platform wind-hit, mid-turn with hair whipping across face, back to viewer looking over shoulder, crouching then rising mid-motion, arms spread wide in defiance, equipment check with focused gaze |
 | Emotion | focused calm, reckless confidence, quiet intensity, barely-controlled fury, detached precision, sudden vulnerability, cold amusement, fierce joy |
 
-Reduce the final idea to 3-5 big anchors: face/eyes, hair motion, outfit anchor, hand/prop gesture, and scene/color identity.
+Reduce the final idea to 3-5 big anchors: soft round-oval face/eyes, hair motion, outfit anchor, hand/prop gesture, and scene/color identity.
 
 ## Auto-Completion Matrix
 
@@ -88,22 +89,23 @@ When the user gives only a short idea, complete the missing fields from this mat
 
 | Need | Options |
 | --- | --- |
-| Xiaohongshu preset | bright offshore racer, neon rooftop idol, storm courier, lab test pilot, golden-hour navigator |
-| Character role | racing champion, courier, mechanic idol, tech diver, aerial medic, hoverboard pilot, cyber photographer, data courier, marine engineer, tactical streamer |
-| Gesture / action | hand reaching toward viewer, lowering goggles, holding floating capsule, pulling zipper, leaning on railing, wind-hit hair turn, stepping from platform edge, checking wrist device, looking back over shoulder |
+| Xiaohongshu preset | bright offshore racer, neon pit-lane rider, neon rooftop idol, storm courier, lab test pilot, golden-hour navigator |
+| Character role | racing champion, motorbike courier, pit-lane racer, courier, mechanic idol, tech diver, aerial medic, hoverboard pilot, cyber photographer, data courier, marine engineer, tactical streamer |
+| Gesture / action | hand reaching toward viewer, lowering goggles, lifting helmet visor, chrome helmet tucked under one arm, holding floating capsule, pulling zipper, leaning on railing, leaning beside one electric sport motorcycle, wind-hit hair turn, stepping from platform edge, checking wrist device, looking back over shoulder |
 | Body composition | upper-body close-up, waist-up hero portrait, 3/4 body with extended arm, full-body low-angle display, over-shoulder turn |
 | Camera pairing | 24mm foreshortening for reaching hand, 35mm low angle for platform presence, 85mm portrait for face-first portrait, 50mm for full-body outfit display |
-| Outfit layer | yellow sport top, black compression top, white translucent jacket, blue harness straps, chrome bomber, clear rain shell, racing shorts, tech skirt, utility belt, fingerless gloves |
-| Prop anchor | headset, goggles, hover capsule, race pass, wrist device, floating drone, helmet, data card, cable hook, compact tool |
+| Outfit layer | yellow sport top, black compression top, white translucent jacket, blue harness straps, chrome bomber, clear rain shell, glossy moto racing jacket, racing shorts, tech skirt, utility belt |
+| Prop anchor | headset, goggles, hover capsule, race pass, wrist device, floating drone, chrome helmet, raised visor, electric sport motorcycle, data card, cable hook, compact tool |
 | Decal placement | chest `URI`, sleeve `DREAM LAB`, single `05` patch, background `DREAM LAB` sign. Use only these large words unless the user requests other text. |
 | Weather / atmosphere | clear blue sky, sea-salt mist, light rain sparkle, rooftop sunset haze, neon steam, storm backlight, wind tunnel gust |
-| Background object | lab tower, crane arm, offshore platform, glass dock rail, maglev lane, rooftop antenna, city skyline, station gantry, holographic sign |
+| Background object | lab tower, crane arm, offshore platform, glass dock rail, maglev lane, neon pit lane, electric sport motorcycle, charging dock, rooftop antenna, city skyline, station gantry, holographic sign |
 | FX bundle | sun lens flare + water droplets + volumetric shaft; neon reflection + steam haze + eye catchlight; rain droplets + rim glow + film grain; bokeh foreground + hair rim glow + dust motes |
 
 Preset routing:
 
 - `xhs-default`: alias for `bright offshore racer`; best first test for Xiaohongshu.
 - `bright offshore racer`: street racer, offshore racing platform, transparent PVC racing jacket, reaching hand, reckless confidence, `solar_chrome`, `daylight_impact`, 24mm foreshortening.
+- `neon pit-lane rider`: motorbike rider, bright open-air pit lane with one electric sport motorcycle and restrained neon signage, glossy moto racing jacket with transparent shell, chrome helmet tucked under one arm, reckless confidence, `solar_chrome`, `daylight_impact`, 35mm low angle.
 - `neon rooftop idol`: idol off-duty, rooftop helipad, oversized chrome bomber, lowering goggles, cold amusement, `cyber_violet`, `neon_midnight`, 35mm low angle.
 - `storm courier`: storm chaser, storm-hit coastal highway, clear rain shell, checking wrist device, focused calm, `jade_core`, `storm_edge`, 50mm full-body display.
 - `lab test pilot`: ship navigator, high-altitude research station, high-collar flight suit, looking back over shoulder, quiet intensity, `void_arc`, `daylight_impact`, 85mm portrait.
@@ -117,12 +119,14 @@ Prefer:
 
 - Open-air port/racing/lab platform + `solar_chrome` + `daylight_impact` + reaching hand or wind-hit turn.
 - Rooftop/city night + `cyber_violet` + `neon_midnight` + goggles/headset gesture.
+- Neon pit lane/coastal road + `cyber_violet` or `solar_chrome` + helmet-under-arm gesture + one electric sport motorcycle.
 - Storm road/coastal platform + `jade_core` + `storm_edge` + courier wrist-device action.
 - Research station/orbital deck + `void_arc` or `sakura_burn` + portrait/over-shoulder turn.
 
 Avoid:
 
 - Pure black studio portraits, low-saturation military realism, plain school uniforms, dense UI overlays, too many props, more than 3 FX layers, or tiny random text.
+- Helmet fully hiding the face by default, multiple motorcycles, or vehicle detail that competes with the character.
 
 ## Creative Style
 

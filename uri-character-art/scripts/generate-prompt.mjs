@@ -7,7 +7,8 @@ const DEFAULTS = {
   archetype: "street racer",
   world: "offshore racing platform",
   outfitAnchor: "transparent PVC racing jacket",
-  heroMoment: "reaching hand toward camera at full extension",
+  heroMoment:
+    "natural bare open palm reaching toward viewer, palm facing camera, exactly one thumb on the side plus four fingers only, five digits total, fingers naturally grouped and softly curved, clear fingertip separation, visible palm lines, hand not cropped",
   emotion: "reckless confidence",
   colorProfile: "solar_chrome",
   lightingProfile: "daylight_impact",
@@ -15,6 +16,8 @@ const DEFAULTS = {
   fxLayer: "lens flare; water droplets on glossy outfit; volumetric light shaft",
   hair: "short silver-white hair, windswept mid-motion",
   eyes: "large luminous pale grey eyes",
+  faceShape:
+    "URI-style compact soft round-oval face, softly rounded cheeks, gentle lower-face fullness, short rounded chin, soft U-shaped jaw curve",
   skinTone: "light warm translucent skin with subsurface glow",
   outfitDetail: "yellow athletic top under transparent jacket, choker, technical straps",
   decals: "URI; DREAM LAB; 05",
@@ -26,7 +29,8 @@ const PRESETS = {
     world:
       "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall signature tower sign",
     outfitAnchor: "transparent PVC racing jacket",
-    heroMoment: "reaching hand toward camera at full extension",
+    heroMoment:
+      "natural bare open palm reaching toward viewer, palm facing camera, exactly one thumb on the side plus four fingers only, five digits total, fingers naturally grouped and softly curved, clear fingertip separation, visible palm lines, hand not cropped",
     emotion: "reckless confidence",
     colorProfile: "solar_chrome",
     lightingProfile: "daylight_impact",
@@ -40,7 +44,8 @@ const PRESETS = {
     world:
       "offshore racing platform, clear blue sky, seagulls, mechanical dock structures, one tall signature tower sign",
     outfitAnchor: "transparent PVC racing jacket",
-    heroMoment: "reaching hand toward camera at full extension",
+    heroMoment:
+      "natural bare open palm reaching toward viewer, palm facing camera, exactly one thumb on the side plus four fingers only, five digits total, fingers naturally grouped and softly curved, clear fingertip separation, visible palm lines, hand not cropped",
     emotion: "reckless confidence",
     colorProfile: "solar_chrome",
     lightingProfile: "daylight_impact",
@@ -48,6 +53,22 @@ const PRESETS = {
     fxLayer: "lens flare; water droplets on glossy outfit; volumetric light shaft",
     outfitDetail:
       "yellow sport top, white transparent jacket, blue harness straps, choker, utility belt, glossy technical panels",
+  },
+  "neon-pit-lane-rider": {
+    seed: "silver-haired motorbike rider, bright URI pit lane, chrome helmet and electric sport motorcycle",
+    archetype: "motorbike rider",
+    world:
+      "bright open-air pit lane beside one electric sport motorcycle, blue sky visible above chrome structures, clean white charging dock, restrained neon signage, one clean DREAM LAB sign",
+    outfitAnchor: "glossy moto racing jacket with transparent shell",
+    heroMoment:
+      "chrome helmet tucked under one arm, raised visor visible, direct eye contact, leaning beside one electric sport motorcycle",
+    emotion: "reckless confidence",
+    colorProfile: "solar_chrome",
+    lightingProfile: "daylight_impact",
+    camera: "35mm low angle with character dominant and motorcycle supporting the silhouette",
+    fxLayer: "sun lens flare; glossy material water droplets; volumetric light shaft",
+    outfitDetail:
+      "yellow sport top, white transparent moto jacket, chrome helmet, blue harness straps, reflective zippers, bare visible hand, readable URI decals",
   },
   "neon-rooftop-idol": {
     archetype: "idol off-duty",
@@ -61,7 +82,7 @@ const PRESETS = {
     camera: "35mm low angle",
     fxLayer: "neon reflections on wet ground; steam haze; eye catchlight",
     outfitDetail:
-      "black compression top, chrome bomber, magenta trim, headset, fingerless gloves",
+      "black compression top, chrome bomber, magenta trim, headset, bare hands",
   },
   "storm-courier": {
     archetype: "storm chaser",
@@ -105,6 +126,35 @@ const PRESETS = {
     outfitDetail:
       "warm white jacket, dusty rose accents, amber trim, translucent collar",
   },
+  "cyber-shaman-surreal": {
+    seed: "URI tech-shaman pilot, bright Dream Lab platform, open sky energy",
+    archetype: "tech shaman",
+    world:
+      "bright high-altitude tech-temple platform, blue-white sky, chrome structures, one clean signature sign",
+    outfitAnchor: "translucent chrome-white tactical jacket with soft holographic lining",
+    heroMoment: "floating half-step with arms open, wind lifting jacket",
+    emotion: "fierce joy",
+    colorProfile: "solar_chrome",
+    lightingProfile: "daylight_impact",
+    camera: "24mm controlled wide angle, slight low-angle presence",
+    fxLayer: "floating liquid chrome droplets; volumetric light shaft; eye catchlight",
+    outfitDetail:
+      "soft holographic lining, anti-gravity fabric lift, high-gloss tech harness, readable URI decals",
+  },
+  "tactical-spectacle": {
+    seed: "URI arena champion, glossy sport-tech suit, direct eye contact",
+    archetype: "tournament champion",
+    world: "bright sport-tech arena with chrome rails, wet reflective floor, clean signature sign",
+    outfitAnchor: "exo-frame partial armor over glossy technical suit",
+    heroMoment: "crouching then rising mid-motion, one hand reaching toward viewer",
+    emotion: "barely-controlled fury",
+    colorProfile: "cyber_violet",
+    lightingProfile: "neon_midnight",
+    camera: "35mm low angle with controlled foreground energy",
+    fxLayer: "shattered geometric glass frozen in mid-air; eye catchlight; restrained neon rim glow",
+    outfitDetail:
+      "reflective zippers, asymmetric armored shoulder piece, chrome-white panels, highly specular wet surfaces",
+  },
 };
 
 const COLOR_PROFILES = {
@@ -124,11 +174,13 @@ const LIGHTING_PROFILES = {
   daylight_impact:
     "strong direct sunlight from upper-right, 5600K key light, 15% cool blue fill, warm gold hair rim, sharp shadow under collar and jaw, volumetric atmosphere haze",
   neon_midnight:
-    "cyan or magenta neon side key, opposite complementary rim, deep black background, wet surface reflections, pupil catchlight, subtle smoke haze",
+    "cyan or magenta neon side key, opposite complementary rim, deep blue reflective background instead of pure black, wet surface reflections, pupil catchlight, subtle smoke haze, strong contrast with protected skin",
   golden_hour_burst:
     "warm 3200K low-angle backlight behind subject, orange-gold rim on shoulders and hair, 20% front fill, amber skin glow, backlit dust particles",
   storm_edge:
     "blue-grey overcast ambient, single cool 6500K cloud-gap highlight, rain droplets, mist background, punchy shadows",
+  chiaroscuro_drama:
+    "optional spectacle-mode high-contrast accent lighting, targeted gobo shadow, bright face and eye catchlights, clean rim light, protected skin highlights, glossy specular accents, avoid pure black cyber poster drift",
 };
 
 const QUALITY_ANCHORS =
@@ -138,7 +190,7 @@ const QUALITY_ANCHORS_WITH_CUSTOM_DECALS =
   "(URI DREAM LAB style:1.25), (hyper-realistic 3D anime character art:1.25), (high saturation:1.2), (high exposure:1.12), large readable custom decals only, minimal tiny text, masterpiece, best quality, 8K resolution, realistic 3D rendering, high contrast colors, rich vivid color, ultra-fine details, Japanese semi-realistic anime style, cinematic composition, bright clear colors, Unreal Engine 5 render quality, physically based rendering, ray tracing reflections";
 
 const NEGATIVE_PROMPT =
-  "(worst quality, low quality:1.4), flat shading, flat 2D anime, painting texture, sketch lines, watercolor texture, dull muddy colors, dark underexposed image, low saturation, low contrast, washed-out skin, dry matte skin, cheap plastic skin, deformed hands, extra fingers, anatomical errors, bad proportions, generic AI face, no personality, bland expression, flat neutral camera, cluttered busy background fighting subject for attention, overblown bloom, uncontrolled lens flare spam, purple fringing, small illegible text, random micro text, fake letters, garbled decals, dense typography clutter, text artifacts, watermark, unsafe or age-inappropriate styling, unrequested gender presentation drift, low-resolution softness";
+  "(worst quality, low quality:1.4), flat shading, flat 2D anime, painting texture, sketch lines, watercolor texture, dull muddy colors, dark underexposed image, low saturation, low contrast, washed-out skin, dry matte skin, cheap plastic skin, heart-shaped face, inverted triangle face, narrow lower face, overly thin face, long narrow face, gaunt cheeks, hollow cheeks, pointed chin, long pointed chin, tapered chin, sharp jawline, sharp V-shaped jaw, sharp V-line face, glove, gloves, fingerless gloves, hand-only macro close-up, fingers spread too wide, cropped fingers, hidden fingers, extra finger-like highlights, deformed hands, extra fingers, extra digit, six fingers, six digits, duplicated fingers, duplicated fingertip, second thumb, double thumb, malformed thumb, missing thumb, fused fingers, webbed fingers, anatomical errors, bad proportions, generic AI face, no personality, bland expression, flat neutral camera, cluttered busy background fighting subject for attention, overblown bloom, uncontrolled lens flare spam, purple fringing, small illegible text, random micro text, fake letters, garbled decals, dense typography clutter, text artifacts, watermark, unsafe or age-inappropriate styling, unrequested gender presentation drift, low-resolution softness";
 
 function printHelp() {
   console.log(`Usage:
@@ -147,7 +199,7 @@ function printHelp() {
 
 Options:
   --brief <path>             Optional JSON file with brief fields.
-  --preset <name>            xhs-default, bright-offshore-racer, neon-rooftop-idol, storm-courier, lab-test-pilot, golden-hour-navigator.
+  --preset <name>            xhs-default, bright-offshore-racer, neon-pit-lane-rider, neon-rooftop-idol, storm-courier, lab-test-pilot, golden-hour-navigator, cyber-shaman-surreal, tactical-spectacle.
   --list-presets             Print available presets.
   --seed <text>              Character seed.
   --archetype <text>         Character archetype.
@@ -156,11 +208,12 @@ Options:
   --hero-moment <text>       Pose/action.
   --emotion <text>           Emotional register.
   --color-profile <name>     solar_chrome, cyber_violet, jade_core, sakura_burn, void_arc.
-  --lighting-profile <name>  daylight_impact, neon_midnight, golden_hour_burst, storm_edge.
+  --lighting-profile <name>  daylight_impact, neon_midnight, golden_hour_burst, storm_edge, chiaroscuro_drama.
   --camera <text>            Lens/camera language.
   --fx-layer <items>         Semicolon-separated FX list.
   --hair <text>              Hair description.
   --eyes <text>              Eye description.
+  --face-shape <text>        Face shape language.
   --skin-tone <text>         Skin description.
   --outfit-detail <text>     Extra outfit details.
   --decals <items>           Semicolon-separated text decals.
@@ -260,6 +313,7 @@ function buildPackage(brief) {
   const characterDescription = [
     `${brief.archetype}, ${brief.seed}`,
     `${brief.eyes}, emotionally readable ${brief.emotion}`,
+    `${brief.faceShape}`,
     `${brief.skinTone}`,
     `${brief.hair}, individual strand separation, silky sheen, strong rim light`,
   ].join(", ");

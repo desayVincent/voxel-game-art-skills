@@ -24,10 +24,21 @@ Use $uri-character-art 把这个角色想法生成 URI Dream Lab 超写实 3D �
 
 - `xhs-default`: 小红书默认亮色海上赛道风。
 - `bright-offshore-racer`: 蓝天、海上平台、伸手广角、黄色运动服。
+- `neon-pit-lane-rider`: 亮系 URI 机车/pit lane 风，电动跑车、铬白头盔、透明机车夹克。
 - `neon-rooftop-idol`: 夜景楼顶、霓虹、湿地反光、冷感姿态。
 - `storm-courier`: 风暴公路、雨滴、战术快递员。
 - `lab-test-pilot`: 高空研究站、飞行服、回眸肖像。
 - `golden-hour-navigator`: 夕阳轨道甲板、暖色光、情绪肖像。
+
+URI 脸型锁：
+
+- 默认使用 `URI-style compact soft round-oval face`，强调软圆鹅蛋脸、圆润脸颊、短圆下巴和柔和 U 型下颌曲线。
+- 负面提示会排除 `heart-shaped face`、尖下巴、窄下半脸和 V-line 脸，避免漂成瓜子脸。
+
+URI 主题扩展：
+
+- 机车主题应保持亮系 URI：`solar_chrome` + `daylight_impact`，把霓虹理解成少量 pit lane 灯牌，而不是暗系夜景赛博。
+- 车机/智能座舱主题适合使用明亮电动车座舱、大尺寸车载中控屏、白铬仪表台和极少量可读 UI；避免密集小字、暗色 cockpit 和 UI 覆盖层。
 
 生成 prompt：
 
@@ -45,6 +56,24 @@ node uri-character-art/scripts/xbai-image.mjs \
   --ar 9:16 \
   --quality high \
   --output output.png
+```
+
+使用内置 preset 生成机车 URI prompt：
+
+```bash
+node uri-character-art/scripts/generate-prompt.mjs \
+  --preset neon-pit-lane-rider \
+  --json
+```
+
+如果 API key 放在兄弟 skill 的 `.env` 里，可以从那个目录执行图片脚本，但使用当前 skill 的绝对路径：
+
+```bash
+node /path/to/skills/uri-character-art/scripts/xbai-image.mjs \
+  --promptfile /path/to/prompt.txt \
+  --ar 2:3 \
+  --quality high \
+  --output /path/to/output.png
 ```
 
 URI 目录结构：
